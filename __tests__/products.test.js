@@ -34,7 +34,10 @@ const notValidProduct = {
   price: 250,
   category: "Phone",
 };
-
+const newProductData = {
+  name: "Updated Product",
+  price: 205,
+};
 let product;
 const invalidId = "123456123456123456123456";
 
@@ -95,6 +98,40 @@ describe("Test Products APIs", () => {
       category: product.category,
     });
   });
+  it("Should return 404 with a non-existing id", async () => {
+    const response = await client
+      .put(`/products/${invalidId}`)
+      .send({ name: "Updated Product" });
+    expect(response.status).toBe(404);
+
+    expect(response.body.message).toBe(
+      `Resource with id ${invalidId} not found!`
+    );
+  });
+
+  it("Should update a product with new data", async () => {
+    let productId = product._id.toString();
+    const response = await client
+      .put(`/products/${productId}`)
+      .send(newProductData)
+      .expect(200);
+    //   expect(response.status).toBe(200);
+
+    //   expect(response.body).toMatchObject({
+    //     _id: product._id.toString(),
+    //     name: newProductData.name,
+    //     price: newProductData.price,
+    //   });
+    expect(response.body.name).toBe(newProductData.name);
+    expect(typeof response.body.name).toBe("string");
+  });
+
+  it("Should accept the request", async () => {
+    const response = await client
+      .put(`/products/${product._id}`)
+      .send(newProductData);
+    expect(response.status).toBe(200);
+  });
 
   test("Should return 404 with a non-existing id", async () => {
     const response = await client.delete(`/products/${invalidId}`);
@@ -107,9 +144,4 @@ describe("Test Products APIs", () => {
     const deletedProduct = await ProductsModel.findById(product._id);
     expect(deletedProduct).toBeNull();
   });
-
-  // it("Should test that GET /products returns 200 and a body", async () => {
-  //   const response = await client.get("/products").expect(200)
-  //   console.log(response.body)
-  // })
 });
