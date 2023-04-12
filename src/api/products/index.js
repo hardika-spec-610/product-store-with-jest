@@ -55,7 +55,7 @@ productsRouter.put("/:id", async (req, res, next) => {
 
 productsRouter.delete("/:id", async (req, res, next) => {
   try {
-    const deletedResource = await ProductsRouter.findByIdAndUpdate(
+    const deletedResource = await ProductsRouter.findByIdAndDelete(
       req.params.id
     );
     if (deletedResource) {

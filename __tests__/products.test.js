@@ -36,6 +36,7 @@ const notValidProduct = {
 };
 
 let product;
+const invalidId = "123456123456123456123456";
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_TEST_URL);
@@ -76,7 +77,6 @@ describe("Test Products APIs", () => {
   });
 
   test("Should return 404 with a non-existing id", async () => {
-    const invalidId = "123456123456123456123456";
     const response = await client.get(`/products/${invalidId}`);
     expect(response.status).toBe(404);
   });
@@ -94,6 +94,18 @@ describe("Test Products APIs", () => {
       imageUrl: product.imageUrl,
       category: product.category,
     });
+  });
+
+  test("Should return 404 with a non-existing id", async () => {
+    const response = await client.delete(`/products/${invalidId}`);
+    expect(response.status).toBe(404);
+  });
+
+  test("Should return delete the products", async () => {
+    const response = await client.delete(`/products/${product._id}`);
+    expect(response.status).toBe(204);
+    const deletedProduct = await ProductsModel.findById(product._id);
+    expect(deletedProduct).toBeNull();
   });
 
   // it("Should test that GET /products returns 200 and a body", async () => {
