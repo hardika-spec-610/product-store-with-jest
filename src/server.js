@@ -24,3 +24,5 @@ server.use(unauthorizedHandler); // 401
 server.use(forbiddenErrorHandler); // 403
 server.use(notfoundHandler); // 404
 server.use(genericErrorHandler); // 500 (this should ALWAYS be the last one)
+
+export default server;

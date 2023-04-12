@@ -23,4 +23,49 @@ productsRouter.get("/", async (req, res, next) => {
   }
 });
 
+productsRouter.get("/:id", async (req, res, next) => {
+  try {
+    const resource = await ProductsRouter.findById(req.params.id);
+    if (resource) {
+      res.send(resource);
+    } else {
+      next(createError(404, `Resource with id ${req.params.id} not found!`));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.put("/:id", async (req, res, next) => {
+  try {
+    const updatedResource = await ProductsRouter.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (updatedResource) {
+      res.send(updatedResource);
+    } else {
+      next(createError(404, `Resource with id ${req.params.id} not found!`));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const deletedResource = await ProductsRouter.findByIdAndUpdate(
+      req.params.id
+    );
+    if (deletedResource) {
+      res.status(204).send();
+    } else {
+      next(createError(404, `Resource with id ${req.params.id} not found!`));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default productsRouter;
